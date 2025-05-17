@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Linktree Cinesia</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(to bottom, #333, #000);
+            text-align: center;
+            padding: 20px;
+            color: white;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 400px;
+            background: transparent;
+            padding: 20px;
+            margin: auto;
+        }
+
+        .profile-img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 10px;
+            border: 2px solid white;
+        }
+
+        h1 {
+            font-size: 24px;
+            margin: 5px 0;
+        }
+
+        p {
+            font-size: 14px;
+            color: #bbb;
+        }
+
+        .links a {
+            display: flex;
+            align-items: center;
+            background: black;
+            color: white;
+            text-decoration: none;
+            padding: 12px;
+            margin: 10px 0;
+            border-radius: 8px;
+            font-weight: bold;
+            transition: 0.3s;
+            justify-content: space-between;
+            border: 2px solid white;
+        }
+
+        .links a:hover {
+            background: #222;
+        }
+
+        .icon {
+            width: 30px;
+            height: 30px;
+            border-radius: 5px;
+            margin-right: 10px;
+        }
+
+        .click-counter {
+            font-size: 12px;
+            background: #444;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 5px;
+        }
+
+        .progress {
+            margin-top: 20px;
+            padding: 10px;
+            background: black;
+            border-radius: 8px;
+            font-weight: bold;
+            border: 2px solid white;
+        }
+
+        .trend {
+            font-size: 14px;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <img src="https://telegra.ph/file/6c75cf265592d7d52588c.jpg" alt="Profile" class="profile-img">
+        <h1>@CINESIA</h1>
+        <p>OPEN JASTEB DAN PEMBUATAN ALL HOSTING</p>
+        
+        <div class="progress">
+            Total Klik: <span id="total-clicks">0</span>
+            <div class="trend" id="trend">📊 Stabil</div>
+        </div>
+
+        <div class="links">
+            <a href="https://t.me/sall_host" onclick="trackClick(0)">
+                <img src="1.jpg" alt="Icon" class="icon">
+                Tempat Berbagai Script Pising
+                <span class="click-counter" id="click-0">0</span>
+            </a>
+            <a href="https://whatsapp.com/channel/0029VaiAUG9B4hdWJHpEQA0H" onclick="trackClick(1)">
+                <img src="https://telegra.ph/file/6c75cf265592d7d52588c.jpg" alt="Icon" class="icon">
+                INFO SCRIPT/TESTI JASTEB | Canale WhatsApp
+                <span class="click-counter" id="click-1">0</span>
+            </a>
+            <a href="https://wa.me/6289653422054" onclick="trackClick(2)">
+                <img src="https://telegra.ph/file/6c75cf265592d7d52588c.jpg" alt="Icon" class="icon">
+                NOMOR UTAMA CINESIA
+                <span class="click-counter" id="click-2">0</span>
+            </a>
+            <a href="https://chat.whatsapp.com/HIWmACBqcTTI9Kn3gyobcc" onclick="trackClick(3)">
+                <img src="https://telegra.ph/file/6c75cf265592d7d52588c.jpg" alt="Icon" class="icon">
+                JASTEB X UNCHEK CINESIA
+                <span class="click-counter" id="click-3">0</span>
+            </a>
+        </div>
+    </div>
+
+    <script>
+        function trackClick(index) {
+            let clicks = JSON.parse(localStorage.getItem("clicks")) || [0, 0, 0, 0];
+            clicks[index] += 1;
+            localStorage.setItem("clicks", JSON.stringify(clicks));
+
+            let totalClicks = (parseInt(localStorage.getItem("totalClicks")) || 0) + 1;
+            localStorage.setItem("totalClicks", totalClicks);
+            localStorage.setItem("lastClickTime", Date.now());
+
+            updateClicks();
+        }
+
+        function updateClicks() {
+            let clicks = JSON.parse(localStorage.getItem("clicks")) || [0, 0, 0, 0];
+            let totalClicks = parseInt(localStorage.getItem("totalClicks")) || 0;
+            document.getElementById("total-clicks").textContent = totalClicks;
+
+            clicks.forEach((count, index) => {
+                document.getElementById("click-" + index).textContent = count;
+            });
+
+            updateTrend();
+        }
+
+        function updateTrend() {
+            let lastClickTime = parseInt(localStorage.getItem("lastClickTime")) || Date.now();
+            let totalClicks = parseInt(localStorage.getItem("totalClicks")) || 0;
+            let now = Date.now();
+            let timeDiff = now - lastClickTime;
+
+            let trendText = document.getElementById("trend");
+            if (timeDiff < 60000) {  // Jika ada klik dalam 1 menit terakhir
+                trendText.textContent = "📈 Naik";
+                trendText.style.color = "green";
+            } else if (timeDiff < 3600000) { // Jika ada klik dalam 1 jam terakhir
+                trendText.textContent = "📊 Stabil";
+                trendText.style.color = "yellow";
+            } else { // Jika tidak ada klik lebih dari 1 jam, kurangi total klik
+                trendText.textContent = "📉 Turun";
+                trendText.style.color = "red";
+                totalClicks = Math.max(0, totalClicks - Math.floor(timeDiff / 3600000));
+                localStorage.setItem("totalClicks", totalClicks);
+                document.getElementById("total-clicks").textContent = totalClicks;
+            }
+        }
+
+        function autoDecreaseClicks() {
+            let lastClickTime = parseInt(localStorage.getItem("lastClickTime")) || Date.now();
+            let now = Date.now();
+            let timeDiff = now - lastClickTime;
+            let totalClicks = parseInt(localStorage.getItem("totalClicks")) || 0;
+
+            if (timeDiff > 3600000) { // Kurangi klik setiap jam jika tidak ada aktivitas
+                totalClicks = Math.max(0, totalClicks - Math.floor(timeDiff / 3600000));
+                localStorage.setItem("totalClicks", totalClicks);
+            }
+
+            updateClicks();
+        }
+
+        window.onload = function() {
+            updateClicks();
+            setInterval(autoDecreaseClicks, 60000); // Cek setiap 1 menit
+        };
+    </script>
+</body>
+</html>
